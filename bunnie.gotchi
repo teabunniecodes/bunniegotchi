@@ -1,0 +1,84 @@
+# to run in command line - python bunnie.gotchi
+
+import random, time
+
+maximum_mood = 15
+
+class Bunnie_Pet:
+    happy = 7
+    annoyed = 0
+    hungry = 0
+    sleepy = 0
+    is_hungry = False
+    is_sleepy = False
+    start_time = time.time()
+    end_time = time.time() - start_time
+
+    def __init__(self):
+        self.mood_happy()
+        # self.mood_annoyed()
+        # self.mood_hungry()
+        # self.mood_sleepy()
+
+    def reset_timer(self):
+        if self.end_time >= 600:
+            self.start_time = 0
+    
+    def mood_happy(self):
+        self.happy = random.randint(0, maximum_mood)
+
+    def mood_annoyed(self):
+        pass
+
+    def mood_hungry(self):
+        if self.hungry <= maximum_mood and self.end_time % 10:
+            if self.hungry < 7:
+                self.hungry += 1
+            elif self.hungry >= 7:
+                self.hungry += 2
+            while self.hungry > 9:
+                self.is_hungry = True
+        else:
+            self.hungry = maximum_mood
+
+    def mood_sleepy(self):
+        if self.sleepy <= maximum_mood and self.end_time % 30:
+            if self.hungry < 7:
+                self.sleepy += 1
+            elif self.sleepy >= 7:
+                self.sleepy += 2
+            while self.sleepy > 9:
+                self.is_sleepy = True
+
+
+    def action_potty(self):
+        pass
+
+    def action_speak(self):
+        # going to add another parameter so pet doesnt just spam talking
+        if self.happy > 11:
+            print('I AM SO HAPPY :O')
+        elif self.happy >= 9:
+            print('I am happy! <3')
+        elif self.happy <= 3:
+            print('I am so sad :(')
+        else:
+            print('MEH')
+
+        while self.is_hungry == True:
+            print('FEED ME >:O')
+
+        while self.is_sleepy == True:
+            print('LET ME SLEEP!!!!!')
+
+    def action_dance(self):
+        pass
+
+    def action_cuddle(self):
+        pass
+
+    #TODO have a method to run the entire class
+
+
+bunnie = Bunnie_Pet()
+bunnie.action_speak()
