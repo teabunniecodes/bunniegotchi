@@ -61,7 +61,7 @@ class Bunnie_Pet:
     def mood_annoyed(self):
         # a random occurance when a specific action is being used. but I also want it to tick up when it's happy mood is depreciating and sleepy/hungry is appreciating
         if self.annoyed <= max_mood and (self.timer > 100 or self.timer % 20 == 0):
-        self.happy = random_int()
+            self.happy = random_int()
 
     def mood_annoyed(self):
         # a random occurance when a specific action is being used. but I also want it to tick up when it's happy mood is depreciating and sleepy/hungry is appreciating
@@ -75,12 +75,12 @@ class Bunnie_Pet:
 
     def mood_hungry(self):
         if self.hungry < max_mood and (self.timer > 2 or self.timer % 10 == 0):
-        if self.hungry <= max_mood and self.end_time % 10:
-            if self.hungry < 7:
-                self.hungry += 1
-                self.annoyed += 1
-            elif self.hungry >= 7:
-                self.hungry += 2
+            if self.hungry <= max_mood and self.end_time % 10:
+                if self.hungry < 7:
+                    self.hungry += 1
+                    self.annoyed += 1
+                elif self.hungry >= 7:
+                    self.hungry += 2
         else:
             self.hungry = max_mood
         if self.hungry > 9:
@@ -188,8 +188,8 @@ class Bunnie_Pet:
 #TODO have a method to run the entire class
 class User_Actions:
     # is_fed = False
-    if self.happy == max_mood and self.hungry == min_mood and self.annoyed == min_mood:
-        print('I am dancing :D')
+    # if self.happy == max_mood and self.hungry == min_mood and self.annoyed == min_mood:
+    #     print('I am dancing :D')
 
     def action_cuddle(self, action):
         if self.happy >= 9 and action:
