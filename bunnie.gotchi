@@ -31,6 +31,20 @@ class Bunnie_Pet:
                 self.start = time.time()
                 self.timer = int(time.time() - self.start)
             break
+            
+    start_time = time.time()
+    end_time = time.time() - start_time
+
+    def __init__(self):
+        self.reset_timer()
+        # self.mood_happy()
+        # self.mood_annoyed()
+        # self.mood_hungry()
+        # self.mood_sleepy()
+
+    def reset_timer(self):
+        if self.end_time > 600:
+            self.start_time = 0
 
     def is_mood(self, mood):
         while mood > 9:
@@ -45,6 +59,11 @@ class Bunnie_Pet:
     def mood_annoyed(self):
         # a random occurance when a specific action is being used. but I also want it to tick up when it's happy mood is depreciating and sleepy/hungry is appreciating
         if self.annoyed <= max_mood and (self.timer > 100 or self.timer % 20 == 0):
+        self.happy = random_int()
+
+    def mood_annoyed(self):
+        # a random occurance when a specific action is being used. but I also want it to tick up when it's happy mood is depreciating and sleepy/hungry is appreciating
+        if self.annoyed <= max_mood:
             if self.happy <= 3:
                 self.annoyed += 1
             elif self.is_hungry or self.is_sleepy:
@@ -54,6 +73,7 @@ class Bunnie_Pet:
 
     def mood_hungry(self):
         if self.hungry < max_mood and (self.timer > 2 or self.timer % 10 == 0):
+        if self.hungry <= max_mood and self.end_time % 10:
             if self.hungry < 7:
                 self.hungry += 1
                 self.annoyed += 1
@@ -92,6 +112,23 @@ class Bunnie_Pet:
                 self.is_mess = True
                 self.y = 0
                 print('I made a mess')
+        self.is_mood(self.is_hungry)
+
+    def mood_sleepy(self):
+        if self.sleepy <= max_mood and self.end_time % 30:
+            if self.hungry < 7:
+                self.sleepy += 1
+            elif self.sleepy >= 7:
+                self.sleepy += 2
+        self.is_mood(self.is_sleepy)
+
+
+    def action_potty(self):
+        while self.end_time >= 300:
+            potty = random_int()
+            x = random_int()
+            if potty == x:
+                self.is_mess = True
 
     def action_speak(self):
         # going to add another parameter so pet doesnt just spam talking
@@ -138,6 +175,21 @@ class Bunnie_Pet:
 #TODO have a method to run the entire class
 class User_Actions:
     # is_fed = False
+    if self.happy == max_mood and self.hungry == min_mood and self.annoyed == min_mood:
+        print('I am dancing :D')
+
+    def action_cuddle(self, action):
+        if self.happy >= 9 and action:
+            print('I am cuddling <3')
+
+    def action_blowkiss(self, action):
+        if action:
+            print('I am blowing a kiss <3')
+            action = False
+
+#TODO have a method to run the entire class
+class User_Actions:
+    is_fed = False
     is_pet = False
     # is_light = True
     is_blowkiss = False
@@ -173,6 +225,22 @@ class User_Actions:
             elif mood_dec < min_mood:
                 mood_dec = min_mood
             break
+
+    def user_pet(self, mood):
+        mood += 3
+        print('<3 <3 <3')
+
+    # def user_tuckin(self):
+    #     # user needs to do the action of tucking in the pet along with turning off the light
+    #     pass
+
+    def  __init__(self):
+        pass
+
+    def user_feed(self, is_mood, mood_dec, mood_inc):
+        if is_mood:
+            mood_inc += 2
+            mood_dec == 0
 
     def user_pet(self, mood):
         mood += 3
