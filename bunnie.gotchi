@@ -10,13 +10,12 @@ is_mood = 9
 def random_int():
     return random.randint(min_mood, max_mood)
 
-def max_limit(mood, mood_limit):
-    if mood > mood_limit:
-        mood = mood_limit
-
-def min_limit(mood, mood_limit):
-    if mood < mood_limit:
-        mood = mood_limit
+def clamp_mood(mood):
+    if mood > max_mood:
+        mood = max_mood
+    elif mood < min_mood:
+        mood = min_mood
+    return mood
 
 class Bunnie_Pet:
     happy = 7
@@ -28,10 +27,10 @@ class Bunnie_Pet:
     is_mess = False
     start = time.time()
     potty_counter = 0
+    poke_counter = 0
 
     def __init__(self):
         self.timer = 0
-        self.reset_timer()
 
     def reset_timer(self):
         while True:
@@ -40,34 +39,29 @@ class Bunnie_Pet:
             else:
                 self.start = time.time()
                 self.timer = int(time.time() - self.start)
-            # self.pet_moods()
-            # self.pet_actions()
             break
     
     def mood_happy(self):
         if self.happy > min_mood and (self.timer % 10 == 0 or self.timer % 10 == 5):
             self.happy -= 1
-        min_limit(self.happy, min_mood)
 
     def mood_annoyed(self):
         # a random occurance when a specific action is being used. but I also want it to tick up when it's happy mood is depreciating and sleepy/hungry is appreciating
-        if self.annoyed < max_mood and (self.timer > 120 or self.timer % 20 == 0):
+        if self.annoyed < max_mood and self.timer > max_mood * 2:
             if self.happy <= 3:
                 self.annoyed += 1
             elif self.is_hungry or self.is_sleepy:
                 self.annoyed += 2
-        max_limit(self.annoyed, max_mood)
 
     def mood_hungry(self):
-        if self.hungry < max_mood and (self.timer > 200 or self.timer % 10 == 0):
+        if self.hungry < max_mood and self.timer > max_mood: #or self.timer % 10 == 0):
             if self.annoyed < max_mood:
                 if self.hungry < mid_mood:
                     self.hungry += 1
                     self.annoyed += 1
-                elif self.hungry >= mid_mood and self.hungry < (max_mood - 1):
+                elif self.hungry >= mid_mood and self.hungry < max_mood:
                     self.hungry += 2
                     self.annoyed += 2
-        max_limit(self.hungry, max_mood)
         if self.hungry > is_mood:
             self.is_hungry = True
         else:
@@ -79,7 +73,6 @@ class Bunnie_Pet:
                 self.sleepy += 1
             elif self.sleepy >= mid_mood and self.sleepy < (max_mood - 1):
                 self.sleepy += 2
-        max_limit(self.sleepy, max_mood)
         if self.sleepy > is_mood:
             self.is_sleepy = True
         else:
@@ -115,13 +108,11 @@ class Bunnie_Pet:
         elif self.happy >= is_mood and self.happy < max_mood:
             print('I am cuddling <3')
             self.happy += 2
-        max_limit(self.happy, max_mood)
 
     def action_blowkiss(self):
         if self.happy < max_mood:
             print('I am blowing a kiss <3')
             self.happy += 1
-        max_limit(self.happy, max_mood)
 
     def pet_moods(self):
         self.mood_annoyed()
@@ -134,15 +125,73 @@ class Bunnie_Pet:
         self.action_dance()
         self.action_speak()
 
+    def mood_limits(self):
+        self.happy = clamp_mood(self.happy)
+        self.annoyed = clamp_mood(self.annoyed)
+        self.hungry = clamp_mood(self.hungry)
+        self.sleepy = clamp_mood(self.sleepy)
+
+    def mood_display(self):
+        print(f'Happy: {self.happy}')
+        print(f'Annoyed: {self.annoyed}')
+        print(f'Hungry: {self.hungry}')
+        print(f'Sleepy: {self.sleepy}')
+
+    def user_pet(self):
+        self.happy += 3
+        print('<3 <3 <3')
+
+    def user_feed(self):
+        snacks = ['Popcorn', 'Cookies', 'Pizza', 'Sushi', 'Boba']
+        while True:
+            print(', '.join(snacks))
+            food = input('What would you like to feed your pet? ').capitalize()
+            if food in snacks:
+                if self.hungry == min_mood:
+                    print("NO! I'm not hungry D:<")
+                elif food == 'Popcorn':
+                    self.hungry -= 2
+                    self.happy += 1
+                elif food == 'Cookies':
+                    self.hungry -= 3
+                    self.happy += 2
+                elif food == 'Pizza' or food == 'Sushi':
+                    self.hungry = min_mood
+                    self.happy += 2
+                elif food == 'Boba':
+                    self.hungry = min_mood
+                    self.happy += 5
+                break
+            else:
+                print('Please choose something I would actually eat')
+
+    def user_cleanup(self):
+        if self.is_mess:
+            self.happy += 2
+            self.is_mess = False
+            print('Thank you for cleaning my mess >:3')
+        else:
+            print('Are you calling me DIRTY??? D:')
+
+    def user_poke(self):
+        if self.happy > min_mood:
+            self.happy -= 1
+        if self.annoyed < max_mood:
+            self.annoyed += 1
+        poke = random_int()
+        x = random_int()
+        if poke == x or self.poke_counter == max_mood:
+            self.poke_counter = 0
+            print('RAWR')
+
 #TODO have a method to run the entire class
 class User_Actions:
     poke = 0
-    mood = 0
     poke_counter = 0
 
     def  __init__(self):
         pass
-
+    
     def user_feed(self, mood_dec, mood_inc):
         snacks = ['Popcorn', 'Cookies', 'Pizza', 'Sushi', 'Boba']
         while True:
@@ -163,16 +212,9 @@ class User_Actions:
                 elif food == 'Boba':
                     mood_dec = min_mood
                     mood_inc += 5
-                max_limit(mood_inc, max_mood)
-                min_limit(mood_dec, min_mood)
                 break
             else:
                 print('Please choose something I would actually eat')
-
-    def user_pet(self, mood):
-        mood += 3
-        print('<3 <3 <3')
-        max_limit(mood, max_mood)
 
     # def user_tuckin(self):
     #     # user needs to do the action of tucking in the pet along with turning off the light
@@ -196,12 +238,9 @@ class User_Actions:
         if poke == x or self.poke_counter == 20:
             self.poke_counter = 0
             print('RAWR')
-        max_limit(mood_inc, max_mood)
-        min_limit(mood_dec, min_mood)
 
 class Bunniegotchi_App:
     bunniegotchi = Bunnie_Pet()
-    petowner = User_Actions()
     user_actions = ['Feed', 'Pet', 'Cuddle', 'Blowkiss', 'Clean', 'Poke']
     # TODO add a greet option as well
     greeting = 'Hello'
@@ -222,11 +261,11 @@ class Bunniegotchi_App:
 
     def feed(self):
         if self.action == 'Feed':
-            self.petowner.user_feed(self.bunniegotchi.hungry, self.bunniegotchi.happy)
+            self.bunniegotchi.user_feed()
 
     def pet(self):
         if self.action == 'Pet':
-            self.petowner.user_pet(self.bunniegotchi.happy)
+            self.bunniegotchi.user_pet()
 
     def blowkiss(self):
         if self.action == 'Blowkiss':
@@ -238,11 +277,11 @@ class Bunniegotchi_App:
 
     def poke(self):
         if self.action == 'Poke':
-            self.petowner.user_poke(self.bunniegotchi.happy, self.bunniegotchi.annoyed)
+            self.bunniegotchi.user_poke()
 
     def cleanup(self):
         if self.action == 'Clean':
-            self.petowner.user_cleanup(self.bunniegotchi.is_mess, self.bunniegotchi.happy)
+            self.bunniegotchi.user_cleanup()
 
     def actions(self):
         self.pet()
@@ -255,19 +294,21 @@ class Bunniegotchi_App:
     def display_time(self):
         self.bunniegotchi.reset_timer()
         if self.bunniegotchi.timer < 600:
-            print(self.bunniegotchi.timer)
+            print(f'Timer: {self.bunniegotchi.timer}')
 
     def run_app(self):
-        name = input("What's your name? ")
-        print(f'{self.greeting} {name}!')
-        pet_name = input("What do you want to name your gotchi? ")
-        print(f'{pet_name} says hi!!!')
+        # name = input("What's your name? ")
+        # print(f'{self.greeting} {name}!')
+        # pet_name = input("What do you want to name your gotchi? ")
+        # print(f'{pet_name} says hi!!!')
         while True:
+            self.bunniegotchi.mood_display()
             self.bunniegotchi.pet_moods()
             self.bunniegotchi.pet_actions()
             self.display_time()
             self.get_user_action()
             self.actions()
+            self.bunniegotchi.mood_limits()
 
 bunnie = Bunniegotchi_App()
 bunnie.run_app()
