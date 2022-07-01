@@ -108,11 +108,13 @@ class Bunnie_Pet:
         elif self.happy >= is_mood and self.happy < max_mood:
             print('I am cuddling <3')
             self.happy += 2
+            self.annoyed -= 2
 
     def action_blowkiss(self):
         if self.happy < max_mood:
             print('I am blowing a kiss <3')
             self.happy += 1
+            self.annoyed -= 1
 
     def pet_moods(self):
         self.mood_annoyed()
@@ -184,61 +186,6 @@ class Bunnie_Pet:
             self.poke_counter = 0
             print('RAWR')
 
-#TODO have a method to run the entire class
-class User_Actions:
-    poke = 0
-    poke_counter = 0
-
-    def  __init__(self):
-        pass
-    
-    def user_feed(self, mood_dec, mood_inc):
-        snacks = ['Popcorn', 'Cookies', 'Pizza', 'Sushi', 'Boba']
-        while True:
-            print(', '.join(snacks))
-            food = input('What would you like to feed your pet? ').capitalize()
-            if food in snacks:
-                if mood_dec == min_mood:
-                    print("NO! I'm not hungry D:<")
-                elif food == 'Popcorn':
-                    mood_dec -= 2
-                    mood_inc += 1
-                elif food == 'Cookies':
-                    mood_dec -= 3
-                    mood_inc += 2
-                elif food == 'Pizza' or food == 'Sushi':
-                    mood_dec = min_mood
-                    mood_inc += 2
-                elif food == 'Boba':
-                    mood_dec = min_mood
-                    mood_inc += 5
-                break
-            else:
-                print('Please choose something I would actually eat')
-
-    # def user_tuckin(self):
-    #     # user needs to do the action of tucking in the pet along with turning off the light
-    #     pass
-
-    def user_cleanup(self, is_mood, mood):
-        if is_mood:
-            mood += 2
-            is_mood = False
-            print('Thank you for cleaning my mess >:3')
-        else:
-            print('Are you calling me DIRTY??? D:')
-
-    def user_poke(self, mood_dec, mood_inc):
-        if mood_dec > min_mood:
-            mood_dec -= 1
-        if mood_inc < max_mood:
-            mood_inc += 1
-        poke = random_int()
-        x = random_int()
-        if poke == x or self.poke_counter == 20:
-            self.poke_counter = 0
-            print('RAWR')
-
 class Bunniegotchi_App:
     bunniegotchi = Bunnie_Pet()
     user_actions = ['Feed', 'Pet', 'Cuddle', 'Blowkiss', 'Clean', 'Poke']
@@ -246,50 +193,34 @@ class Bunniegotchi_App:
     greeting = 'Hello'
 
     def __init__(self):
-        self.action = ''
+        pass
 
     def get_user_action(self):
         while True:
             print(', '.join(self.user_actions) + ', or Exit')
-            self.action = input('What would you like to do? ').capitalize()
-            if self.action in self.user_actions:
+            chosen_action = input('What would you like to do? ').capitalize()
+            if chosen_action in self.user_actions:
+                self.execute_action(chosen_action)
                 break
-            elif self.action == str('Exit'):
+            elif chosen_action == 'Exit':
+                print('Thank you for playing!')
                 exit()
             else:
                 print('Please choose a valid option')
 
-    def feed(self):
-        if self.action == 'Feed':
+    def execute_action(self, action):
+        if action == 'Feed':
             self.bunniegotchi.user_feed()
-
-    def pet(self):
-        if self.action == 'Pet':
+        elif action == 'Pet':
             self.bunniegotchi.user_pet()
-
-    def blowkiss(self):
-        if self.action == 'Blowkiss':
+        elif action == 'Blowkiss':
             self.bunniegotchi.action_blowkiss()
-
-    def cuddle(self):
-        if self.action == 'Cuddle':
+        elif action == 'Cuddle':
             self.bunniegotchi.action_cuddle()
-
-    def poke(self):
-        if self.action == 'Poke':
+        elif action == 'Poke':
             self.bunniegotchi.user_poke()
-
-    def cleanup(self):
-        if self.action == 'Clean':
+        elif action == 'Clean':
             self.bunniegotchi.user_cleanup()
-
-    def actions(self):
-        self.pet()
-        self.blowkiss()
-        self.feed()
-        self.cuddle()
-        self.poke()
-        self.cleanup()
 
     def display_time(self):
         self.bunniegotchi.reset_timer()
@@ -307,8 +238,61 @@ class Bunniegotchi_App:
             self.bunniegotchi.pet_actions()
             self.display_time()
             self.get_user_action()
-            self.actions()
             self.bunniegotchi.mood_limits()
+
+# class User_Actions:
+#     poke = 0
+#     poke_counter = 0
+
+#     def  __init__(self, bunnie):
+#         self.bunnie = bunnie
+    
+#     def user_feed(self, mood_dec, mood_inc):
+#         snacks = ['Popcorn', 'Cookies', 'Pizza', 'Sushi', 'Boba']
+#         while True:
+#             print(', '.join(snacks))
+#             food = input('What would you like to feed your pet? ').capitalize()
+#             if food in snacks:
+#                 if mood_dec == min_mood:
+#                     print("NO! I'm not hungry D:<")
+#                 elif food == 'Popcorn':
+#                     mood_dec -= 2
+#                     mood_inc += 1
+#                 elif food == 'Cookies':
+#                     mood_dec -= 3
+#                     mood_inc += 2
+#                 elif food == 'Pizza' or food == 'Sushi':
+#                     mood_dec = min_mood
+#                     mood_inc += 2
+#                 elif food == 'Boba':
+#                     mood_dec = min_mood
+#                     mood_inc += 5
+#                 break
+#             else:
+#                 print('Please choose something I would actually eat')
+
+#     # def user_tuckin(self):
+#     #     # user needs to do the action of tucking in the pet along with turning off the light
+#     #     pass
+
+#     def user_cleanup(self, is_mood, mood):
+#         if is_mood:
+#             mood += 2
+#             is_mood = False
+#             print('Thank you for cleaning my mess >:3')
+#         else:
+#             print('Are you calling me DIRTY??? D:')
+
+#     def user_poke(self, mood_dec, mood_inc):
+#         if mood_dec > min_mood:
+#             mood_dec -= 1
+#         if mood_inc < max_mood:
+#             mood_inc += 1
+#         poke = random_int()
+#         x = random_int()
+#         if poke == x or self.poke_counter == 20:
+#             self.poke_counter = 0
+#             print('RAWR')
 
 bunnie = Bunniegotchi_App()
 bunnie.run_app()
